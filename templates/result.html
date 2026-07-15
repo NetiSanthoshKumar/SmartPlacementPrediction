@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Prediction Result</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Prediction Result</h1>
+
+<h2>{{ result }}</h2>
+
+{% if suggestions %}
+<div class="suggestions">
+    <h3>Areas to Improve</h3>
+    <ul>
+        {% for suggestion in suggestions %}
+        <li>{{ suggestion }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<br>
+
+<a href="/">
+<button>Predict Again</button>
+</a>
+
+</div>
+
+</body>
+
+</html>
