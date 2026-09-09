@@ -5,9 +5,10 @@ import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.dummy import DummyClassifier
 from sklearn.metrics import (accuracy_score, classification_report, confusion_matrix,
                              f1_score, precision_score, recall_score, roc_auc_score)
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier
@@ -27,6 +28,14 @@ def build_preprocessor(numerical_features):
 
 def main():
     df = pd.read_csv(DATA_PATH).drop(columns=["student_id", "salary_package_lpa"])
+    quality = pd.DataFrame({
+        "check": ["rows", "duplicate_rows", "missing_cells", "placed_rate", "not_placed_rate"],
+        "value": [len(df), int(df.duplicated().sum()), int(df.isna().sum().sum()),
+                  float((df["placement_status"] == "Placed").mean()),
+                  float((df["placement_status"] == "Not Placed").mean())],
+    })
+    MODEL_DIR.mkdir(exist_ok=True)
+    quality.to_csv(MODEL_DIR / "data_quality_report.csv", index=False)
     X = df.drop(columns="placement_status")
     y = df["placement_status"]
     numerical_features = [column for column in X.columns if column not in CATEGORICAL_FEATURES]
@@ -63,6 +72,13 @@ def main():
     best_name = comparison.iloc[0]["model"]
     best_pipeline = trained[best_name]
     best_predictions = best_pipeline.predict(X_test)
+    baseline = DummyClassifier(strategy="most_frequent", random_state=42)
+    baseline.fit(X_train, y_train)
+    print("\nMajority baseline accuracy:", accuracy_score(y_test, baseline.predict(X_test)))
+    cv_scores = cross_val_score(
+        best_pipeline, X, y, cv=StratifiedKFold(n_splits=3, shuffle=True, random_state=42), scoring="roc_auc", n_jobs=1
+    )
+    print("3-fold ROC-AUC:", cv_scores, "mean:", cv_scores.mean())
     print(comparison.to_string(index=False))
     print("\nSelected model:", best_name)
     print("\nClassification report:\n", classification_report(y_test, best_predictions))

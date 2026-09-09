@@ -1,46 +1,73 @@
-"# SmartPlacementPrediction
+# Smart Placement Prediction
 
-A Flask-based web application that predicts whether a student is likely to get placed based on academic and skill-related features.
+## Problem statement
+This Flask application estimates whether a student is likely to be placed from academic, skill, experience, and activity information. It is an educational project for demonstrating an end-to-end machine-learning workflow, not a hiring decision system.
+
+## Objectives
+- Collect every feature used by the trained model.
+- Apply the same preprocessing during training and prediction.
+- Compare several classification algorithms with an untouched test set.
+- Show probability, important model features, and practical improvement areas.
 
 ## Features
-- Student placement prediction through a trained machine learning pipeline
-- Simple web form for entering student details
-- Result page that shows the prediction and improvement suggestions for low-probability cases
+- Full validated student input form.
+- Logistic Regression, Decision Tree, Random Forest, and Gradient Boosting comparison.
+- Accuracy, precision, recall, F1, ROC-AUC, classification report, and confusion matrix.
+- Placement probability and model confidence.
+- Feature importance for the selected model when supported.
+- Recommendations phrased as potential improvement areas, not guaranteed causes.
 
-## Project Structure
-- app.py: Flask application entry point
-- templates/: HTML pages for the web interface
-- static/: CSS assets
-- src/: Data preprocessing, training, and prediction modules
-- data/: Dataset used for training
-- models/: Trained model files
+## Dataset
+`data/student_placement_prediction_dataset_2026.csv` contains 100,000 rows. The target is `placement_status`; `student_id` and `salary_package_lpa` are excluded from prediction. The input features are age, gender, CGPA, branch, college tier, internships, projects, certifications, coding, aptitude, communication, logical reasoning, hackathons, GitHub repositories, LinkedIn connections, mock interview score, attendance, backlogs, extracurricular score, leadership, volunteer experience, sleep, and study hours.
 
-## Requirements
-Install the required Python packages:
+The training script writes `models/data_quality_report.csv`, including row count, duplicate count, missing-cell count, and class rates. It also compares the selected model with a majority-class baseline and runs three-fold stratified ROC-AUC validation. The dataset may contain weak or synthetic relationships, so a result near the baseline is possible and should be discussed honestly.
 
-```bash
-pip install -r requirements.txt
+## Technologies
+Python, pandas, scikit-learn, joblib, Flask, Jinja2, HTML, and CSS.
+
+## Preprocessing and training
+Categorical features use `OneHotEncoder(handle_unknown="ignore")`. Numeric features use `StandardScaler` inside the saved scikit-learn pipeline. A stratified 80/20 split is used for the comparison. The best model is selected by test ROC-AUC, then saved as `models/placement_pipeline.pkl`. The comparison and feature rankings are saved as CSV files.
+
+## Project structure
+```text
+app.py                         Flask application and validation
+data/                          Source CSV
+models/                        Saved pipeline and generated reports
+src/train_pipeline.py         Training, comparison, quality checks
+templates/index.html           Full input form
+templates/result.html          Prediction result
+static/css/style.css           Simple responsive styling
+INTERVIEW_QUESTIONS.md         Beginner-friendly interview preparation
 ```
 
-## Run the Application
-From the project root, run:
-
+## Run locally
 ```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python src/train_pipeline.py
 python app.py
 ```
+Open `http://127.0.0.1:5000/`.
 
-Then open your browser and go to:
+## API
+`GET /` displays the form. `POST /predict` accepts the form fields, validates them, sends a one-row DataFrame through the saved pipeline, and renders the result. Invalid or missing values return the form with HTTP 400 and friendly messages.
 
+## Architecture
 ```text
-http://127.0.0.1:5000/
+Browser form -> Flask validation -> pandas DataFrame -> saved preprocessing/model pipeline
+			-> class prediction + probability -> result page and recommendations
 ```
 
-## Usage
-1. Enter the student details in the form.
-2. Click Predict Placement.
-3. Review the result and suggested improvement areas if the placement chance is low.
+## Evaluation and limitations
+The generated comparison table is `models/model_comparison.csv`. No accuracy should be assumed before running the trainer. Accuracy alone is insufficient; inspect recall, F1, ROC-AUC, class distribution, baseline, and confusion matrix. Feature importance indicates association used by the model, not causation. Probabilities are model estimates and are not automatically calibrated real-world chances.
 
-## Notes
-- The project uses a saved scikit-learn pipeline for prediction.
-- Make sure the model file exists in the models folder before running the app.
-" 
+## Screenshots
+Run the application locally and add screenshots of the form and result page here for a portfolio submission.
+
+## Future improvements
+- Add probability calibration and a calibration curve.
+- Tune thresholds using a validation set and explain the precision/recall tradeoff.
+- Add automated tests for the schema and validation boundaries.
+- Track model versions and dataset versions.
+- Recheck fairness across demographic groups before any real-world use.
