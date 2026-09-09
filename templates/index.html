@@ -42,104 +42,52 @@
 {% endif %}
 
 <form method="POST" action="/predict">
-
 <div class="form-section">
     <div class="section-heading"><span class="section-number">01</span><div><h2>Student information</h2><p>Basic details about your current academic context.</p></div></div>
-
-<div class="row">
-
-<div class="field">
-<label>Gender</label>
-<select name="gender" required>
-<option value="" disabled selected>Select gender</option>
-<option value="Male" {% if form and form.get('gender') == 'Male' %}selected{% endif %}>Male</option>
-<option value="Female" {% if form and form.get('gender') == 'Female' %}selected{% endif %}>Female</option>
-</select>
-</div>
-
-</div>
-
-<div class="field"><label>Age <span class="field-hint">18-24 years</span></label><input type="number" name="age" min="18" max="24" placeholder="e.g. 21" value="{{ form.get('age', '') if form else '' }}" required></div>
-<div class="field"><label>College tier</label><select name="college_tier" required>{% for tier in ['Tier 1', 'Tier 2', 'Tier 3'] %}<option value="{{ tier }}" {% if form and form.get('college_tier') == tier %}selected{% endif %}>{{ tier }}</option>{% endfor %}</select></div>
-
-</div>
-
+    <div class="row">
+        <div class="field"><label>Gender</label><select name="gender" required><option value="" disabled selected>Select gender</option><option value="Male" {% if form and form.get('gender') == 'Male' %}selected{% endif %}>Male</option><option value="Female" {% if form and form.get('gender') == 'Female' %}selected{% endif %}>Female</option></select></div>
+        <div class="field"><label>Age <span class="field-hint">18-24 years</span></label><input type="number" name="age" min="18" max="24" placeholder="e.g. 21" value="{{ form.get('age', '') if form else '' }}" required></div>
+        <div class="field"><label>Branch</label><select name="branch" required><option value="" disabled selected>Select branch</option>{% for branch in ['CSE', 'AIML', 'DS', 'IT', 'ECE', 'ME'] %}<option value="{{ branch }}" {% if form and form.get('branch') == branch %}selected{% endif %}>{{ branch }}</option>{% endfor %}</select></div>
+        <div class="field"><label>College tier</label><select name="college_tier" required>{% for tier in ['Tier 1', 'Tier 2', 'Tier 3'] %}<option value="{{ tier }}" {% if form and form.get('college_tier') == tier %}selected{% endif %}>{{ tier }}</option>{% endfor %}</select></div>
+    </div>
 </div>
 
 <div class="form-section">
     <div class="section-heading"><span class="section-number">02</span><div><h2>Academic profile</h2><p>Academic consistency and practical exposure.</p></div></div>
-
-<div class="row">
-
-<div class="field">
-<label>CGPA <span class="field-hint">out of 10</span></label>
-<input type="number" step="0.01" min="4.5" max="10" name="cgpa" placeholder="e.g. 8.20" value="{{ form.get('cgpa', '') if form else '' }}" required>
-</div>
-
-<div class="field">
-<label>Internships <span class="field-hint">count</span></label>
-<input type="number" min="0" max="8" name="internships_count" placeholder="e.g. 2" value="{{ form.get('internships_count', '') if form else '' }}" required>
-</div>
-
-</div>
-
-<div class="row">
-
-<div class="field">
-<label>Projects <span class="field-hint">count</span></label>
-<input type="number" min="0" max="13" name="projects_count" placeholder="e.g. 3" value="{{ form.get('projects_count', '') if form else '' }}" required>
-</div>
-
-<div class="field">
-<label>Attendance <span class="field-hint">out of 100%</span></label>
-<input type="number" step="0.1" min="50" max="100" name="attendance_percentage" placeholder="e.g. 85" value="{{ form.get('attendance_percentage', '') if form else '' }}" required>
-</div>
-
-</div>
-
-<div class="row">
-
-<div class="field">
-<label>Backlogs <span class="field-hint">count</span></label>
-<input type="number" min="0" max="6" name="backlogs" placeholder="e.g. 0" value="{{ form.get('backlogs', '') if form else '' }}" required>
-</div>
-
-<div class="field"><label>Certifications <span class="field-hint">count</span></label><input type="number" name="certifications_count" min="0" max="11" step="1" placeholder="e.g. 2" value="{{ form.get('certifications_count', '') if form else '' }}" required></div>
-
-</div>
+    <div class="row">
+        <div class="field"><label>CGPA <span class="field-hint">out of 10</span></label><input type="number" step="0.01" min="4.5" max="10" name="cgpa" placeholder="e.g. 8.20" value="{{ form.get('cgpa', '') if form else '' }}" required></div>
+        <div class="field"><label>Internships <span class="field-hint">count</span></label><input type="number" min="0" max="8" name="internships_count" placeholder="e.g. 2" value="{{ form.get('internships_count', '') if form else '' }}" required></div>
+        <div class="field"><label>Projects <span class="field-hint">count</span></label><input type="number" min="0" max="13" name="projects_count" placeholder="e.g. 3" value="{{ form.get('projects_count', '') if form else '' }}" required></div>
+        <div class="field"><label>Certifications <span class="field-hint">count</span></label><input type="number" name="certifications_count" min="0" max="11" step="1" placeholder="e.g. 2" value="{{ form.get('certifications_count', '') if form else '' }}" required></div>
+        <div class="field"><label>Attendance <span class="field-hint">out of 100%</span></label><input type="number" step="0.1" min="50" max="100" name="attendance_percentage" placeholder="e.g. 85" value="{{ form.get('attendance_percentage', '') if form else '' }}" required></div>
+        <div class="field"><label>Backlogs <span class="field-hint">count</span></label><input type="number" min="0" max="6" name="backlogs" placeholder="e.g. 0" value="{{ form.get('backlogs', '') if form else '' }}" required></div>
+    </div>
 </div>
 
 <div class="form-section">
-    <div class="section-heading"><span class="section-number">03</span><div><h2>Skills and readiness</h2><p>Rate your current preparation honestly from 20 to 100.</p></div></div>
-
-{% for field, label, min, max, step in [
-('coding_skill_score', 'Coding skill score', 20, 100, 0.1),
-('aptitude_score', 'Aptitude score', 20, 100, 0.1), ('communication_skill_score', 'Communication score', 20, 100, 0.1),
-('logical_reasoning_score', 'Logical reasoning score', 20, 100, 0.1), ('mock_interview_score', 'Mock interview score', 20, 100, 0.1)
-] %}
-<div class="field"><label>{{ label }} {% if 'score' in field %}<span class="field-hint">out of 100</span>{% elif field.endswith('_count') or field in ['hackathons_participated', 'github_repos', 'linkedin_connections'] %}<span class="field-hint">count</span>{% elif field == 'sleep_hours' or field == 'study_hours_per_day' %}<span class="field-hint">hours</span>{% endif %}</label><input type="number" name="{{ field }}" min="{{ min }}" max="{{ max }}" step="{{ step }}" placeholder="{{ min }}-{{ max }}" value="{{ form.get(field, '') if form else '' }}" required></div>
-{% endfor %}
-</div>
-
+    <div class="section-heading"><span class="section-number">03</span><div><h2>Skills and readiness</h2><p>Rate your current preparation from 20 to 100.</p></div></div>
+    <div class="row">
+        {% for field, label in [('coding_skill_score', 'Coding skill score'), ('aptitude_score', 'Aptitude score'), ('communication_skill_score', 'Communication score'), ('logical_reasoning_score', 'Logical reasoning score'), ('mock_interview_score', 'Mock interview score')] %}
+        <div class="field"><label>{{ label }} <span class="field-hint">out of 100</span></label><input type="number" name="{{ field }}" min="20" max="100" step="0.1" placeholder="e.g. 75" value="{{ form.get(field, '') if form else '' }}" required></div>
+        {% endfor %}
+    </div>
 </div>
 
 <div class="form-section">
     <div class="section-heading"><span class="section-number">04</span><div><h2>Experience and habits</h2><p>Signals that help complete your student profile.</p></div></div>
-
-{% for field, label, min, max, step in [
-('hackathons_participated', 'Hackathons', 0, 8, 1), ('github_repos', 'GitHub repositories', 0, 16, 1),
-('linkedin_connections', 'LinkedIn connections', 50, 999, 1), ('extracurricular_score', 'Extracurricular score', 0, 100, 0.1),
-('leadership_score', 'Leadership score', 0, 100, 0.1), ('sleep_hours', 'Sleep hours', 3, 10, 0.1),
-('study_hours_per_day', 'Study hours per day', 0.5, 10, 0.1)
-] %}
-<div class="field"><label>{{ label }} {% if 'score' in field %}<span class="field-hint">out of 100</span>{% elif field in ['hackathons_participated', 'github_repos', 'linkedin_connections'] %}<span class="field-hint">count</span>{% else %}<span class="field-hint">hours</span>{% endif %}</label><input type="number" name="{{ field }}" min="{{ min }}" max="{{ max }}" step="{{ step }}" placeholder="{{ min }}-{{ max }}" value="{{ form.get(field, '') if form else '' }}" required></div>
-{% endfor %}
-
-<div class="field"><label>Volunteer experience</label><select name="volunteer_experience" required><option value="No">No</option><option value="Yes">Yes</option></select></div>
+    <div class="row">
+        <div class="field"><label>Hackathons <span class="field-hint">count</span></label><input type="number" name="hackathons_participated" min="0" max="8" step="1" placeholder="e.g. 1" value="{{ form.get('hackathons_participated', '') if form else '' }}" required></div>
+        <div class="field"><label>GitHub repositories <span class="field-hint">count</span></label><input type="number" name="github_repos" min="0" max="16" step="1" placeholder="e.g. 4" value="{{ form.get('github_repos', '') if form else '' }}" required></div>
+        <div class="field"><label>LinkedIn connections <span class="field-hint">count</span></label><input type="number" name="linkedin_connections" min="50" max="999" step="1" placeholder="e.g. 250" value="{{ form.get('linkedin_connections', '') if form else '' }}" required></div>
+        <div class="field"><label>Extracurricular score <span class="field-hint">out of 100</span></label><input type="number" name="extracurricular_score" min="0" max="100" step="0.1" placeholder="e.g. 70" value="{{ form.get('extracurricular_score', '') if form else '' }}" required></div>
+        <div class="field"><label>Leadership score <span class="field-hint">out of 100</span></label><input type="number" name="leadership_score" min="0" max="100" step="0.1" placeholder="e.g. 65" value="{{ form.get('leadership_score', '') if form else '' }}" required></div>
+        <div class="field"><label>Sleep <span class="field-hint">hours per night</span></label><input type="number" name="sleep_hours" min="3" max="10" step="0.1" placeholder="e.g. 7" value="{{ form.get('sleep_hours', '') if form else '' }}" required></div>
+        <div class="field"><label>Study time <span class="field-hint">hours per day</span></label><input type="number" name="study_hours_per_day" min="0.5" max="10" step="0.1" placeholder="e.g. 4" value="{{ form.get('study_hours_per_day', '') if form else '' }}" required></div>
+        <div class="field"><label>Volunteer experience</label><select name="volunteer_experience" required><option value="No">No</option><option value="Yes">Yes</option></select></div>
+    </div>
 </div>
 
 <div class="form-footer"><span><span class="required-mark">*</span> Required fields</span><button class="primary-action" type="submit"><span>Generate assessment</span><span class="button-arrow">→</span></button></div>
-
 </form>
 
 </section>
