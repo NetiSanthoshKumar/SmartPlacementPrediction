@@ -59,6 +59,17 @@ Open `http://127.0.0.1:5000/`.
 
 Render provides the `PORT` environment variable automatically. The application listens on `0.0.0.0` and uses that port in production. Do not use Flask's debug server for a public deployment.
 
+## Deploy on Vercel
+Vercel can run the Flask app as a serverless Python function using the included `vercel.json` file.
+
+1. Commit and push the project to GitHub, including `vercel.json` and `models/placement_pipeline.pkl`.
+2. Import the repository at [vercel.com](https://vercel.com/).
+3. Keep the detected framework as `Other`.
+4. Leave the build command empty. Vercel reads `requirements.txt` automatically.
+5. Deploy and open the generated Vercel URL.
+
+The app does not need the training CSV at runtime. Vercel has serverless execution limits, so it is appropriate for a portfolio demonstration rather than a long-running training service. Retrain models locally, commit only the small production pipeline, and redeploy.
+
 ### GitHub large-file warning
 If GitHub refuses an old model because it is larger than 100 MB, remove it from Git tracking before pushing:
 ```bash
