@@ -50,6 +50,25 @@ python app.py
 ```
 Open `http://127.0.0.1:5000/`.
 
+## Deploy on Render
+1. Make sure `models/placement_pipeline.pkl` is committed to your Git repository. It is the small production model used by Flask. Do not commit `models/placement_model.pkl`; it is an obsolete 477 MB artifact.
+2. Push the project to GitHub. Keep the CSV dataset private or excluded from the deployment repository because the running app does not need it.
+3. In Render, choose **New +** -> **Web Service**, connect the GitHub repository, and select the project.
+4. Set **Runtime** to `Python`, **Build Command** to `pip install -r requirements.txt`, and **Start Command** to `gunicorn app:app`.
+5. Choose the free plan for a demonstration, create the service, and open the generated `.onrender.com` URL.
+
+Render provides the `PORT` environment variable automatically. The application listens on `0.0.0.0` and uses that port in production. Do not use Flask's debug server for a public deployment.
+
+### GitHub large-file warning
+If GitHub refuses an old model because it is larger than 100 MB, remove it from Git tracking before pushing:
+```bash
+git rm --cached models/placement_model.pkl
+git add .gitignore models/placement_pipeline.pkl
+git commit -m "Prepare app for deployment"
+git push
+```
+The old file can remain on your computer, but it is not needed by the deployed app.
+
 ## API
 `GET /` displays the form. `POST /predict` accepts the form fields, validates them, sends a one-row DataFrame through the saved pipeline, and renders the result. Invalid or missing values return the form with HTTP 400 and friendly messages.
 
