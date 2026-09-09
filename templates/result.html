@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-<title>Prediction Result</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assessment Result | Smart Placement</title>
 
 <link rel="stylesheet"
 href="{{ url_for('static', filename='css/style.css') }}">
@@ -12,35 +13,46 @@ href="{{ url_for('static', filename='css/style.css') }}">
 
 <body>
 
-<div class="container">
+<main class="shell">
 
-<h1>Prediction Result</h1>
+<header class="topbar">
+    <a class="brand" href="/" aria-label="Smart Placement home"><span class="brand-mark">SP</span><span><strong>Smart Placement</strong><small>Career readiness assessment</small></span></a>
+    <span class="status-pill"><span class="status-dot"></span> Assessment complete</span>
+</header>
 
-<h2>{{ result }}</h2>
+<section class="result-header">
+    <p class="eyebrow">PLACEMENT READINESS / RESULT</p>
+    <h1>Your assessment is ready</h1>
+    <p>Use this estimate as a planning signal, not as a guarantee of an outcome.</p>
+</section>
 
-<div class="score"><strong>{{ probability }}%</strong><span>estimated placement probability</span></div>
-<p>Model confidence: {{ confidence }}%</p>
+<section class="result-grid">
+    <div class="result-card result-main">
+        <div class="result-label">Predicted outcome</div>
+        <h2>{{ result }}</h2>
+        <div class="score"><strong>{{ probability }}<small>%</small></strong><span>estimated placement probability</span></div>
+        <div class="meter"><span style="width: {{ probability }}%"></span></div>
+        <p class="muted">The estimate is based on the information you provided and the trained model's learned patterns.</p>
+    </div>
+    <div class="result-card confidence-card"><div class="result-label">Model confidence</div><strong class="confidence-value">{{ confidence }}%</strong><p class="muted">Confidence reflects the model's certainty between the two predicted classes.</p></div>
+</section>
 
-{% if drivers %}<div class="suggestions"><h3>Top model factors</h3><ul>{% for driver in drivers %}<li>{{ driver }}</li>{% endfor %}</ul></div>{% endif %}
+{% if drivers %}<section class="result-card detail-section"><div class="section-heading"><span class="section-number">01</span><div><h2>Top model factors</h2><p>Features the selected model relied on most strongly for its estimate.</p></div></div><div class="factor-list">{% for driver in drivers %}<div class="factor"><span>{{ '%02d'|format(loop.index) }}</span><strong>{{ driver }}</strong><em>model signal</em></div>{% endfor %}</div><p class="fine-print">These factors describe model behavior and do not prove that one feature causes placement.</p></section>{% endif %}
 
 {% if suggestions %}
-<div class="suggestions">
-    <h3>Areas to Improve</h3>
+<section class="result-card detail-section recommendations">
+    <div class="section-heading"><span class="section-number">02</span><div><h2>Potential improvement areas</h2><p>Practical next steps based on the profile you submitted.</p></div></div>
     <ul>
         {% for suggestion in suggestions %}
         <li>{{ suggestion }}</li>
         {% endfor %}
     </ul>
-</div>
+</section>
 {% endif %}
 
-<br>
+<div class="result-actions"><a class="secondary-action" href="/">← Start a new assessment</a></div>
 
-<a href="/">
-<button type="button" onclick="window.location.href='/'">Predict Again</button>
-</a>
-
-</div>
+</main>
 
 </body>
 
