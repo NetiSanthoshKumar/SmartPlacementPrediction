@@ -18,6 +18,11 @@ href="{{ url_for('static', filename='css/style.css') }}">
 
 <h2>{{ result }}</h2>
 
+<div class="score"><strong>{{ probability }}%</strong><span>estimated placement probability</span></div>
+<p>Model confidence: {{ confidence }}%</p>
+
+{% if drivers %}<div class="suggestions"><h3>Top model factors</h3><ul>{% for driver in drivers %}<li>{{ driver }}</li>{% endfor %}</ul></div>{% endif %}
+
 {% if suggestions %}
 <div class="suggestions">
     <h3>Areas to Improve</h3>
@@ -32,7 +37,7 @@ href="{{ url_for('static', filename='css/style.css') }}">
 <br>
 
 <a href="/">
-<button>Predict Again</button>
+<button type="button" onclick="window.location.href='/'">Predict Again</button>
 </a>
 
 </div>

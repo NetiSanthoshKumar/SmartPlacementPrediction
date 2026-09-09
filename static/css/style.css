@@ -1,12 +1,13 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    font-family: Georgia, serif;
+    background: linear-gradient(135deg, #edf6f5, #c9e7e1);
 }
 
 .container {
-    width: 700px;
+    max-width: 900px;
+    width: calc(100% - 40px);
     margin: 40px auto;
     background: white;
     padding: 30px;
@@ -26,7 +27,7 @@ p{
 
 .row{
     display:flex;
-    gap:20px;
+    flex-wrap: wrap;
     margin-bottom:18px;
 }
 
@@ -62,4 +63,18 @@ button{
 
 button:hover{
     background:#0056b3;
+}
+
+.field { min-width: 220px; margin-bottom: 14px; }
+.field input, .field select { background: #fbfdfc; }
+.errors { color: #8b1e1e; background: #fff0ee; padding: 12px 18px; margin-bottom: 18px; border-radius: 6px; }
+.suggestions { background: #edf6f5; padding: 14px 20px; border-left: 4px solid #007b6e; }
+.score { text-align: center; margin: 24px 0 8px; color: #007b6e; }
+.score strong { display: block; font-size: 3rem; }
+.score span { color: #555; }
+
+@media (max-width: 640px) {
+    .container { margin: 16px auto; padding: 20px; }
+    .row { display: block; }
+    .field { min-width: 0; }
 }
